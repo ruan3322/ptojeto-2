@@ -1,0 +1,176 @@
+openapi: 3.0.3
+info:
+  title: API de Pizzas e Bebidas
+  version: 1.0.0
+  description: API simples em Node.js com Express para gerenciamento de cardápio de pizzas e bebidas.
+paths:
+  /pizza:
+    get:
+      summary: Lista todos os itens
+      description: Retorna a lista completa de pizzas e bebidas cadastradas.
+      responses:
+        '200':
+          description: Lista retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+    post:
+      summary: Cadastra um novo item
+      description: Adiciona uma nova pizza ou bebida ao cardápio.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - preco
+              properties:
+                nome:
+                  type: string
+                  example: pizza de marguerita
+                preco:
+                  type: number
+                  example: 42.00
+      responses:
+        '201':
+          description: Item criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Dados obrigatórios ausentes.
+
+  /pizza/{id}:
+    get:
+      summary: Busca um item pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID numérico do item
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Produto não encontrado.
+
+    put:
+      summary: Substitui um item completamente (PUT)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID numérico do item
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - preco
+              properties:
+                nome:
+                  type: string
+                  example: pizza de calabresa especial
+                preco:
+                  type: number
+                  example: 45.00
+      responses:
+        '200':
+          description: Item substituído com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Nome e preço são obrigatórios.
+        '404':
+          description: Item não encontrado.
+
+    patch:
+      summary: Atualiza parcialmente um item (PATCH)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID numérico do item
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: pizza de calabresa acebolada
+                preco:
+                  type: number
+                  example: 40.00
+      responses:
+        '200':
+          description: Item atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Item não encontrado.
+
+    delete:
+      summary: Remove um item do cardápio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID numérico do item
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item removido com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                    example: Item removido com sucesso.
+                  item:
+                    $ref: '#/components/schemas/Item'
+        '404':
+          description: Item não encontrado.
+
+components:
+    schemas:
+      Item:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 1
+          nome:
+            type: string
+            example: pizza de calabresa
+          preco:
+            type: number
+            example: 38.50
